@@ -1,0 +1,42 @@
+.container{
+	width : 300px;
+	margin: 10px auto;
+	background-color: rgb(86, 110, 243);
+}
+.input-box{
+	height: 60px;
+	width: 100%;
+}
+.input-box--input{
+	width: 250px;
+	height: 25px;
+	background-color: #fff;
+	position:  relative;
+	margin: 18px 26px;
+	border: 0;
+	text-align: center;
+}
+.strips{
+	border: 5px solid black;	
+	padding: 5px 0;
+}
+.strips--single-data {
+	height: 20px;
+	width: 95%;
+	margin: 5px auto;
+	border: solid red 5px;
+	background-color: #fff;
+	text-align: center;
+	display: inline-flex;
+}
+.single-data--status{
+	height: 20px;
+	width: 95%;
+	background-color: yellow;
+	margin-right: 230px;
+}
+.single-data--delete{
+	height: 20px;
+	width: 95%;
+	background-color: green;
+}
