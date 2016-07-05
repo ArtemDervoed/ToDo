@@ -27,16 +27,26 @@
 	border: solid red 5px;
 	background-color: #fff;
 	text-align: center;
-	display: inline-flex;
+	list-style: none;
 }
 .single-data--status{
 	height: 20px;
-	width: 95%;
-	background-color: yellow;
-	margin-right: 230px;
+    width: 20px;
+    background-color: yellow;
+    margin-right: 230px;
+    position: relative;
+    bottom: 39px;
+    left: 0px;
 }
-.single-data--delete{
+.single-data--del{
 	height: 20px;
-	width: 95%;
-	background-color: green;
+    width: 20px;
+    background-color: green;
+    position: relative;
+    bottom: 19px;
+    left: 256px;
+}
+.__is-not-active {
+	text-decoration: line-through;
+	background-color: #9E9E9E;
 }

@@ -17,6 +17,30 @@ function  DataStorage(){
 			}
 		}
 	}
+	function setStatusItemData(id){
+		var obj;
+		for(var i in localStorage){
+			obj = JSON.parse(localStorage.getItem(i));
+			if(obj.id === id){
+				if( obj.active === true){
+					obj.active = false;
+				} else {
+					obj.active = true;
+				}
+				localStorage.setItem(i.toString(), JSON.stringify(obj));
+			}
+		}
+	}
+	function setContentItemData(id, newContent){
+		var obj;
+		for(var i in localStorage){
+			obj = JSON.parse(localStorage.getItem(i));
+			if(obj.id === id){
+				obj.data = newContent;
+				localStorage.setItem(i.toString(), JSON.stringify(obj));
+			}
+		}
+	}
 	function updateData(){
 		var obj;
 		var index = 0;
@@ -41,6 +65,12 @@ function  DataStorage(){
 	}
 	function editData(key, value){
 		localStorage[key.toString()] = value;
+	}
+	this.setContentItem = function(id, newContent){
+		setContentItemData(id,newContent);
+	}
+	this.setStatusItem = function(id){
+		setStatusItemData(id);
 	}
 	this.getItem = function(id){
 		return getItemData(id);
