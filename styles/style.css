@@ -7,6 +7,12 @@
 	height: 60px;
 	width: 100%;
 }
+input[type = "button"]{
+	width: 65px;
+    height: 20px;
+    margin-left: 25px;
+    font-size: xx-small;
+}
 .input-box--input{
 	width: 250px;
 	height: 25px;
