@@ -48,10 +48,8 @@ function  DataStorage(){
 			obj = JSON.parse(localStorage.getItem(i));
 			obj.id  = index;
 			localStorage.setItem(i, JSON.stringify(obj));
-			index++;
-			console.log(localStorage.getItem(i));		
+			index++;		
 		}
-		console.log("-----------------------------------------");	
 	}
 	function removeData(id){
 		var obj;
@@ -62,9 +60,6 @@ function  DataStorage(){
 			}
 		}
 		updateData();
-	}
-	function editData(key, value){
-		localStorage[key.toString()] = value;
 	}
 	this.setContentItem = function(id, newContent){
 		setContentItemData(id,newContent);
@@ -89,8 +84,5 @@ function  DataStorage(){
 	};
 	this.remove = function(index){
 		removeData(index);
-	};
-	this.edit = function(key,value){
-		editData(key,value);
 	};
 }
