@@ -4,6 +4,7 @@ window.onload = function(){
 	var todos = document.getElementsByClassName("strips--single-data");
 	var todosCount = document.getElementById("todos-count");
 	var counter = memo.getLengthStorage();
+	var clickCounter = 0;
 	todosCount.innerHTML = "Количество заметок " +  memo.getLengthStorage(); 
 	var message = {
 		id : "",
@@ -11,7 +12,22 @@ window.onload = function(){
 		active : true
 	}
 	var displayMode = 0;
-	refresh(memo);
+	refresh();
+	node[0].ondblclick = function( e ) {
+		var target = e.target;
+		if (target.className !== 'strips--single-data'){
+			return;
+		}
+		if(target.className == "strips--single-data"){
+			target = e.target;
+			for(var i = 0; i < todos.length; i++){
+				if (todos[i]===target){
+					memo.setContentItem(i,prompt("Edit todo"));
+				}
+			}
+		}
+		Draw();
+	}
 	node[0].onclick = function( e ) {
 		var target = e.target;
 		if (target.className !== 'single-data--del' && target.className !== 'single-data--status'){
@@ -33,17 +49,9 @@ window.onload = function(){
 				}
 			}
 		}
-		if(displayMode === 0){
-	    	refresh(memo);
-	    }
-	    else if(displayMode === 1){
-	    	onlyDisable(memo);
-	    }
-	    else if(displayMode === 2){
-	    	onlyActive(memo);
-	    }
+		Draw();
 	    todosCount.innerHTML = "Количество заметок " + memo.getLengthStorage();
-		counter = localStorage.length;
+		counter = memo.getLengthStorage();
 	};
 	document.getElementsByClassName("only-enable")[0].onclick = function(){
 		onlyActive(memo);
@@ -56,6 +64,31 @@ window.onload = function(){
 	document.getElementsByClassName("all")[0].onclick = function(){
 		refresh(memo);
 		displayMode = 0;
+	};
+	document.getElementsByClassName("todos-count--select-all")[0].onclick = function() {
+		if(clickCounter === 0){
+			for(var i = 0; i < memo.getLengthStorage(); i++){
+				if(memo.getItem(i).active === true){	
+					memo.setStatusItem(i);
+				} else {
+					continue;
+				}
+			}
+			onlyDisable();
+			displayMode = 1;
+			clickCounter++;
+		}else if(clickCounter === 1) {
+			for(var i = 0; i < memo.getLengthStorage(); i++){
+				if(memo.getItem(i).active === false){	
+					memo.setStatusItem(i);
+				} else {
+					continue;
+				}
+			}
+			displayMode = 2;
+			onlyActive();
+			clickCounter--;
+		}
 	};
 	document.onkeydown = function checkKeycode(event){
 	    if(!event){
@@ -70,20 +103,23 @@ window.onload = function(){
 	    		console.log(localStorage);
 	    		textBox[0].value = "";
 	    		counter = localStorage.length;
-	    		if(displayMode === 0){
-	    			refresh(memo);
-	    		}
-	    		else if(displayMode === 1) {
-	    			onlyDisable(memo);
-	    		}
-	    		else if(displayMode === 2){
-	    			onlyActive(memo);
-	    		}
+	    		Draw();
 	    	}
 		}
 		todosCount.innerHTML = "Количество заметок " + memo.getLengthStorage();
 	}
-	function switchStatus(index,memo){
+	function Draw(){
+		if(displayMode === 0){
+	    	refresh();
+	    }
+	    else if(displayMode === 1) {
+	    	onlyDisable();
+	    }
+	    else if(displayMode === 2){
+	    	onlyActive();
+	    }
+	}
+	function switchStatus(index){
 		memo.setStatusItem(index);	
 		if(memo.getItem(index).active === false){
 			todos[index].classList.add("__is-not-active");
@@ -96,7 +132,7 @@ window.onload = function(){
 			node[0].removeChild(todos[0])
 		}	
 	}
-	function onlyActive(memo){
+	function onlyActive(){
 		invalidate();
 		for( var i = 0; i < memo.getLengthStorage(); i++){
 			var strip = document.createElement('li');
@@ -115,7 +151,7 @@ window.onload = function(){
 			}
 		}
 	}
-	function onlyDisable(memo){
+	function onlyDisable(){
 		invalidate();
 		for( var i = 0; i < memo.getLengthStorage(); i++){
 			var strip = document.createElement('li');
@@ -134,7 +170,7 @@ window.onload = function(){
 			}
 		}
 	}
-	function refresh(memo){
+	function refresh(){
 		invalidate();
 		for( var i = 0; i < memo.getLengthStorage(); i++){
 			var strip = document.createElement('li');
