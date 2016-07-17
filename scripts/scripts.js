@@ -5,6 +5,7 @@ window.onload = function(){
 	var todosCount = document.getElementById("todos-count");
 	var counter = memo.getLengthStorage();
 	var clickCounter = 0;
+	var inputBox;
 	todosCount.innerHTML = "Количество заметок " +  memo.getLengthStorage(); 
 	var message = {
 		id : "",
@@ -15,14 +16,22 @@ window.onload = function(){
 	refresh();
 	node[0].ondblclick = function( e ) {
 		var target = e.target;
-		if (target.className !== 'strips--single-data'){
+		if (target.className !== 'single-data--todo'){
 			return;
 		}
-		if(target.className == "strips--single-data"){
+		if(target.className == "single-data--todo"){
 			target = e.target;
 			for(var i = 0; i < todos.length; i++){
-				if (todos[i]===target){
-					memo.setContentItem(i,prompt("Edit todo"));
+				if (todos[i] === target.parentNode){
+					var inputBox = document.createElement('input');
+					inputBox.type = 'text';
+					inputBox.className = 'editing-todo';
+					target.appendChild(inputBox);
+					var td = prompt("Edit todo");
+					if(td !==''){
+						memo.setContentItem(i,td);
+						target.removeChild(inputBox);
+					}
 				}
 			}
 		}
@@ -50,7 +59,7 @@ window.onload = function(){
 			}
 		}
 		Draw();
-	    todosCount.innerHTML = "Количество заметок " + memo.getLengthStorage();
+		todosCount.innerHTML = "Количество заметок " + memo.getLengthStorage();
 		counter = memo.getLengthStorage();
 	};
 	document.getElementsByClassName("only-enable")[0].onclick = function(){
@@ -91,33 +100,32 @@ window.onload = function(){
 		}
 	};
 	document.onkeydown = function checkKeycode(event){
-	    if(!event){
-	    	var event = window.event;
-	    }
-	    else if(event.which == 13) {
-	    	var textBox = document.getElementsByClassName("input-box--input");
-	    	if(textBox[0].value !== "") {
-	    		message.data = textBox[0].value;
-	    		message.id = counter; 
-	    		memo.add(counter, message);
-	    		console.log(localStorage);
-	    		textBox[0].value = "";
-	    		counter = localStorage.length;
-	    		Draw();
-	    	}
+		if(!event){
+			var event = window.event;
+		}
+		else if(event.which == 13) {
+			var textBox = document.getElementsByClassName("input-box--input");
+			if(textBox[0].value !== "") {
+				message.data = textBox[0].value;
+				message.id = counter; 
+				memo.add(counter, message);
+				textBox[0].value = "";
+				counter = localStorage.length;
+				Draw();
+			}
 		}
 		todosCount.innerHTML = "Количество заметок " + memo.getLengthStorage();
 	}
 	function Draw(){
 		if(displayMode === 0){
-	    	refresh();
-	    }
-	    else if(displayMode === 1) {
-	    	onlyDisable();
-	    }
-	    else if(displayMode === 2){
-	    	onlyActive();
-	    }
+			refresh();
+		}
+		else if(displayMode === 1) {
+			onlyDisable();
+		}
+		else if(displayMode === 2){
+			onlyActive();
+		}
 	}
 	function switchStatus(index){
 		memo.setStatusItem(index);	
@@ -133,62 +141,40 @@ window.onload = function(){
 		}	
 	}
 	function onlyActive(){
-		invalidate();
+		refresh();
 		for( var i = 0; i < memo.getLengthStorage(); i++){
-			var strip = document.createElement('li');
-			if(memo.getItem(i).active === true){
-				strip.className ='strips--single-data';		 
-				strip.innerHTML = memo.getItem(i).data;
-				var del = document.createElement('div');
-				del.className = 'single-data--del';
-				del.innerHTML = "";
-				strip.appendChild(del);
-				var status = document.createElement('div');
-				status.className ='single-data--status';
-				status.innerHTML ="";
-				strip.appendChild(status);
-				node[0].insertBefore(strip,node.firstChild);
+			if(memo.getItem(i).active === false){
+				todos[i].style.display = 'none';
 			}
 		}
 	}
 	function onlyDisable(){
-		invalidate();
+		refresh();
 		for( var i = 0; i < memo.getLengthStorage(); i++){
-			var strip = document.createElement('li');
-			if(memo.getItem(i).active===false){
-				strip.className ='strips--single-data __is-not-active';		 
-				strip.innerHTML = memo.getItem(i).data;
-				var del = document.createElement('div');
-				del.className = 'single-data--del';
-				del.innerHTML = "";
-				strip.appendChild(del);
-				var status = document.createElement('div');
-				status.className = 'single-data--status';
-				status.innerHTML = "";
-				strip.appendChild(status);
-				node[0].insertBefore(strip,node.firstChild);
+			if(memo.getItem(i).active === true){
+				todos[i].style.display = 'none';
 			}
 		}
 	}
 	function refresh(){
 		invalidate();
-		for( var i = 0; i < memo.getLengthStorage(); i++){
-			var strip = document.createElement('li');
+		for(var i = 0;i < memo.getLengthStorage(); i++){
+			var li = document.createElement('li');
+			li.className = 'strips--single-data';
+			var divStatus = document.createElement('div');
+			divStatus.className = 'single-data--status';
+			var divTodo = document.createElement('div');
+			divTodo.className = 'single-data--todo';
+			divTodo.innerHTML = memo.getItem(i).data;
 			if(memo.getItem(i).active === false){
-				strip.className = 'strips--single-data __is-not-active';		 
-			} else {
-				strip.className = 'strips--single-data';
+				divTodo.className+= ' '+'__is-not-active'
 			}
-			strip.innerHTML = memo.getItem(i).data;
-			var del = document.createElement('div');
-			del.className ='single-data--del';
-			del.innerHTML ="";
-			strip.appendChild(del);
-			var status = document.createElement('div');
-			status.className = 'single-data--status';
-			status.innerHTML = "";
-			strip.appendChild(status);
-			node[0].insertBefore(strip,node.firstChild);
+			var divDelete = document.createElement('div');
+			divDelete.className = 'single-data--del';
+			li.appendChild(divStatus);
+			li.appendChild(divTodo);
+			li.appendChild(divDelete);
+			node[0].appendChild(li);
 		}
 	}
 }
