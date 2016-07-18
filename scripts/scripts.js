@@ -6,9 +6,8 @@ window.onload = function(){
 	var counter = memo.getLengthStorage();
 	var clickCounter = 0;
 	var inputBox;
-	todosCount.innerHTML = "Количество заметок " +  memo.getLengthStorage(); 
+	count.innerHTML =  " " + memo.getLengthStorage(); 
 	var message = {
-		id : "",
 		data : "",
 		active : true
 	}
@@ -29,7 +28,7 @@ window.onload = function(){
 					target.appendChild(inputBox);
 					var td = prompt("Edit todo");
 					if(td !==''){
-						memo.setContentItem(i,td);
+						memo.setContentItem(todos[i].id,td);
 						target.removeChild(inputBox);
 					}
 				}
@@ -44,34 +43,25 @@ window.onload = function(){
 		}
 		if(target.className == "single-data--del"){
 			target = target.parentNode;
-			for(var i = 0; i < todos.length; i++){
-				if (todos[i]===target){
-					memo.remove(i);
-				}
-			}
+			memo.remove(target.id);
 		}
 		if(target.className == "single-data--status"){
 			target = target.parentNode;
-			for(var i = 0; i < todos.length; i++){
-				if (todos[i] === target){
-					memo.setStatusItem(i);
-				}
-			}
+			memo.setStatusItem(target.id);
 		}
 		Draw();
-		todosCount.innerHTML = "Количество заметок " + memo.getLengthStorage();
-		counter = memo.getLengthStorage();
+		count.innerHTML =  " " + memo.getLengthStorage(); 
 	};
 	document.getElementsByClassName("only-enable")[0].onclick = function(){
-		onlyActive(memo);
+		onlyActive();
 		displayMode = 2;
 	};
 	document.getElementsByClassName("only-disable")[0].onclick = function(){
-		onlyDisable(memo);
+		onlyDisable();
 		displayMode = 1;
 	};
 	document.getElementsByClassName("all")[0].onclick = function(){
-		refresh(memo);
+		refresh();
 		displayMode = 0;
 	};
 	document.getElementsByClassName("todos-count--select-all")[0].onclick = function() {
@@ -83,7 +73,6 @@ window.onload = function(){
 					continue;
 				}
 			}
-			onlyDisable();
 			displayMode = 1;
 			clickCounter++;
 		}else if(clickCounter === 1) {
@@ -95,9 +84,9 @@ window.onload = function(){
 				}
 			}
 			displayMode = 2;
-			onlyActive();
 			clickCounter--;
 		}
+		Draw();
 	};
 	document.onkeydown = function checkKeycode(event){
 		if(!event){
@@ -107,14 +96,13 @@ window.onload = function(){
 			var textBox = document.getElementsByClassName("input-box--input");
 			if(textBox[0].value !== "") {
 				message.data = textBox[0].value;
-				message.id = counter; 
 				memo.add(counter, message);
 				textBox[0].value = "";
-				counter = localStorage.length;
+				counter++;
 				Draw();
 			}
 		}
-		todosCount.innerHTML = "Количество заметок " + memo.getLengthStorage();
+	count.innerHTML =  " " + memo.getLengthStorage(); 
 	}
 	function Draw(){
 		if(displayMode === 0){
@@ -130,9 +118,9 @@ window.onload = function(){
 	function switchStatus(index){
 		memo.setStatusItem(index);	
 		if(memo.getItem(index).active === false){
-			todos[index].classList.add("__is-not-active");
+			todos[index].childNodes[1].classList.add("__is-not-active");
 		} else if(memo.getItem(index).active === true){
-			todos[index].classList.remove("__is-not-active");
+			todos[index].childNodes[1].classList.remove("__is-not-active");
 		}
 	}
 	function invalidate(){
@@ -142,15 +130,15 @@ window.onload = function(){
 	}
 	function onlyActive(){
 		refresh();
-		for( var i = 0; i < memo.getLengthStorage(); i++){
-			if(memo.getItem(i).active === false){
+		for(var i = 0; i < memo.getLengthStorage(); i++){
+			if(memo.getItem(i).active === false ){
 				todos[i].style.display = 'none';
 			}
 		}
 	}
 	function onlyDisable(){
 		refresh();
-		for( var i = 0; i < memo.getLengthStorage(); i++){
+		for(var i = 0; i < memo.getLengthStorage(); i++){
 			if(memo.getItem(i).active === true){
 				todos[i].style.display = 'none';
 			}
@@ -158,9 +146,10 @@ window.onload = function(){
 	}
 	function refresh(){
 		invalidate();
-		for(var i = 0;i < memo.getLengthStorage(); i++){
+		for(var i = 0; i < memo.getLengthStorage(); i++){
 			var li = document.createElement('li');
 			li.className = 'strips--single-data';
+			li.id = memo.getKey(i);
 			var divStatus = document.createElement('div');
 			divStatus.className = 'single-data--status';
 			var divTodo = document.createElement('div');

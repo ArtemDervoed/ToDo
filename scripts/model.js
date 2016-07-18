@@ -9,57 +9,36 @@ function  DataStorage(){
 		return localStorage.length;
 	}
 	function getItemData(id){
-		var obj;
-		for(var i in localStorage){
-			obj = JSON.parse(localStorage.getItem(i));
-			if(obj.id === id){
-				return JSON.parse(localStorage.getItem(i.toString()));
-			}
-		}
+		return JSON.parse(localStorage.getItem(localStorage.key(id)));
 	}
 	function setStatusItemData(id){
-		var obj;
-		for(var i in localStorage){
-			obj = JSON.parse(localStorage.getItem(i));
-			if(obj.id === id){
-				if( obj.active === true){
-					obj.active = false;
-				} else {
-					obj.active = true;
-				}
-				localStorage.setItem(i.toString(), JSON.stringify(obj));
-			}
+		var obj = JSON.parse(localStorage.getItem(id));
+		if( obj.active === true){
+			obj.active = false;
+		} else {
+			obj.active = true;
 		}
+			localStorage.setItem(id, JSON.stringify(obj));
+	}
+	function getLastKeyData(){
+		return localStorage.key(localStorage.length - 1);
 	}
 	function setContentItemData(id, newContent){
-		var obj;
-		for(var i in localStorage){
-			obj = JSON.parse(localStorage.getItem(i));
-			if(obj.id === id){
-				obj.data = newContent;
-				localStorage.setItem(i.toString(), JSON.stringify(obj));
-			}
-		}
-	}
-	function updateData(){
-		var obj;
-		var index = 0;
-		for(var i in localStorage){
-			obj = JSON.parse(localStorage.getItem(i));
-			obj.id  = index;
-			localStorage.setItem(i, JSON.stringify(obj));
-			index++;		
-		}
+		var obj = JSON.parse(localStorage.getItem(id));
+		obj.data = newContent;
+		localStorage.setItem(id, JSON.stringify(obj));
 	}
 	function removeData(id){
-		var obj;
-		for(var i in localStorage){
-			obj = JSON.parse(localStorage.getItem(i));
-			if(obj.id === id){
-				localStorage.removeItem(i)
-			}
-		}
-		updateData();
+		localStorage.removeItem(id);
+	}
+	function getKeyData(id){
+		return localStorage.key(id);
+	}
+	this.getKey = function(id){
+		return getKeyData(id);
+	}
+	this.getLastKey = function(){
+		return getLastKeyData();
 	}
 	this.setContentItem = function(id, newContent){
 		setContentItemData(id,newContent);
